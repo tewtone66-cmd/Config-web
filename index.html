@@ -1,21 +1,21 @@
 <!doctype html>
 <html lang="fa" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Config Web</title>
-  <link rel="stylesheet" href="/style.css">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0d8a55">
+<title>Config Web — Dashboard</title><link rel="stylesheet" href="/style.css">
 </head>
 <body>
-  <main class="app">
-    <header><div class="logo">CW</div><div><h1>Config Web</h1><p>مدیریت و ساخت کانفیگ</p></div></header>
-    <section class="card">
-      <h2>ساخت کانفیگ</h2>
-      <p>پنل اولیه آماده است. سیستم تولید و مدیریت کانفیگ در مراحل بعدی به این بخش متصل می‌شود.</p>
-      <button id="start">شروع ساخت</button>
-      <div id="status" class="status">آماده</div>
-    </section>
-  </main>
-  <script src="/app.js"></script>
-</body>
-</html>
+<div class="shell">
+<aside class="sidebar">
+  <div class="brand"><div class="logo">CW</div><div><strong>Config Web</strong><span>پنل مدیریت</span></div></div>
+  <nav><a class="active" href="#dashboard">◈ <span>داشبورد</span></a><a href="#builder">＋ <span>ساخت کانفیگ</span></a><a href="#configs">▣ <span>کانفیگ‌های من</span></a><a href="#settings">⚙ <span>تنظیمات</span></a></nav>
+  <div class="side-note"><b>نسخه اولیه</b><span>ساختار پنل آماده اتصال به API است.</span></div>
+</aside>
+<main class="main">
+<header class="topbar"><div><span class="eyebrow">داشبورد</span><h1>خوش اومدی 👋</h1></div><button class="profile">کاربر <span>⌄</span></button></header>
+<section class="hero"><div><span class="pill">● سیستم آماده است</span><h2>کانفیگ جدیدت رو بساز</h2><p>از اینجا ساخت و مدیریت کانفیگ‌های پروژه را شروع کن.</p><button class="primary" id="newConfig">+ ساخت کانفیگ جدید</button></div><div class="hero-orb">CW</div></section>
+<section class="stats"><div class="stat"><span>کانفیگ‌های من</span><b>0</b><small>هنوز موردی ساخته نشده</small></div><div class="stat"><span>وضعیت سرویس</span><b class="ok">آنلاین</b><small>Cloudflare Worker فعال است</small></div><div class="stat"><span>امنیت</span><b>فعال</b><small>ساختار پنل آماده است</small></div></section>
+<section class="panel" id="builder"><div class="panel-head"><div><h3>ساخت کانفیگ</h3><p>اطلاعات موردنیاز را در مرحله بعد به این فرم اضافه می‌کنیم.</p></div><span class="step">مرحله ۱</span></div><div class="empty"><div class="empty-icon">＋</div><h3>هنوز کانفیگی ساخته نشده</h3><p>ماژول تولید و ذخیره‌سازی در مرحله بعد به پنل متصل می‌شود.</p><button class="secondary" id="start">شروع ساخت</button></div></section>
+<footer>Config Web · زیرساخت پنل و API در حال توسعه</footer>
+</main></div><div class="toast" id="toast">این بخش در مرحله بعد فعال می‌شود.</div><script src="/app.js"></script>
+</body></html>
