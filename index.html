@@ -1,1 +1,55 @@
-<!doctype html><html lang="fa" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0d8a55"><title>Config Web</title><link rel="stylesheet" href="/style.css"></head><body><div id="authView" class="auth-view"><div class="auth-card"><div class="auth-logo">CW</div><h1 id="authTitle">ورود به حساب</h1><p id="authSubtitle">برای ساخت کانفیگ وارد حساب شو.</p><form id="authForm"><label id="usernameLabel" class="hidden">نام کاربری<input id="username" autocomplete="username" minlength="3" maxlength="30"></label><label>ایمیل یا نام کاربری<input id="login" autocomplete="username"></label><label>رمز عبور<input id="password" type="password" autocomplete="current-password" minlength="8"></label><button class="primary auth-btn" type="submit" id="authSubmit">ورود</button><div class="auth-error" id="authError"></div></form><button class="switch-auth" id="switchAuth">حساب نداری؟ ثبت‌نام</button></div></div><div id="appView" class="hidden"><div class="shell"><aside class="sidebar"><div class="brand"><div class="logo">CW</div><div><strong>Config Web</strong><span>پنل مدیریت</span></div></div><nav><a class="active" href="#dashboard">◈ <span>داشبورد</span></a><a href="#builder">＋ <span>ساخت کانفیگ</span></a><a href="#configs">▣ <span>کانفیگ‌های من</span></a></nav><button class="logout" id="logout">خروج از حساب</button></aside><main class="main"><header class="topbar"><div><span class="eyebrow">داشبورد</span><h1>خوش اومدی <span id="welcomeUser"></span> 👋</h1></div></header><section class="hero"><div><span class="pill">● سیستم آماده است</span><h2>ساخت کانفیگ VLESS</h2><p>اطلاعات سرور را وارد کن تا کانفیگ ساخته و در حساب خودت ذخیره شود.</p><button class="primary" id="newConfig">+ ساخت کانفیگ</button></div><div class="hero-orb">V</div></section><section class="stats"><div class="stat"><span>کانفیگ‌های من</span><b id="configCount">0</b><small>ذخیره‌شده در حساب شما</small></div><div class="stat"><span>وضعیت سرویس</span><b class="ok">آنلاین</b><small>Cloudflare Worker</small></div><div class="stat"><span>امنیت</span><b>فعال</b><small>Session امن</small></div></section><section class="panel" id="builder"><div class="panel-head"><div><h3>ساخت کانفیگ VLESS</h3><p>این نسخه فقط خروجی متنی تولید می‌کند؛ برای اتصال واقعی بعداً سرور Xray اضافه می‌کنیم.</p></div></div><form id="configForm" class="config-form"><label>نام کانفیگ<input id="configName" maxlength="100" required placeholder="مثلاً VLESS-01"></label><div class="form-grid"><label>آدرس سرور<input id="serverAddress" required placeholder="example.com"></label><label>پورت<input id="serverPort" type="number" min="1" max="65535" value="443" required></label></div><label>UUID<input id="uuid" required placeholder="UUID سرور"></label><div class="form-grid"><label>Transport<select id="transport"><option value="tcp">TCP</option><option value="ws">WebSocket</option><option value="grpc">gRPC</option></select></label><label>TLS<select id="tls"><option value="tls">TLS</option><option value="none">بدون TLS</option></select></label></div><button class="primary" type="submit">تولید و ذخیره کانفیگ</button></form><div id="generated" class="generated hidden"><label>کانفیگ تولیدشده<textarea id="generatedText" readonly></textarea></label><button class="secondary" id="copyConfig" type="button">کپی</button></div><div id="configList" class="config-list"></div></section><footer>Config Web · نسخه اولیه</footer></main></div></div><div class="toast" id="toast"></div><script src="/app.js"></script></body></html>
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#07130e">
+<title>Config Web — پنل ساخت کانفیگ</title><link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="noise"></div>
+<div id="authView" class="auth-view">
+  <div class="auth-glow glow-a"></div><div class="auth-glow glow-b"></div>
+  <div class="auth-card reveal">
+    <div class="auth-logo"><span>C</span><i></i></div><div class="brand-caption">CONFIG WEB <em>v2</em></div>
+    <h1 id="authTitle">ورود به حساب</h1><p id="authSubtitle">وارد پنل شخصی ساخت و مدیریت کانفیگ شو.</p>
+    <form id="authForm"><label id="usernameLabel" class="hidden">نام کاربری<input id="username" autocomplete="username" minlength="3" maxlength="30" placeholder="نام کاربری"></label>
+      <label>ایمیل یا نام کاربری<input id="login" autocomplete="username" placeholder="example@mail.com"></label>
+      <label>رمز عبور<input id="password" type="password" autocomplete="current-password" minlength="8" placeholder="حداقل ۸ کاراکتر"></label>
+      <button class="primary auth-btn" type="submit" id="authSubmit"><span>ورود</span><b>↗</b></button><div class="auth-error" id="authError"></div>
+    </form><button class="switch-auth" id="switchAuth">حساب نداری؟ <b>ثبت‌نام</b></button>
+  </div>
+</div>
+<div id="appView" class="hidden">
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand"><div class="logo">C<span>W</span></div><div><strong>Config Web</strong><span>Control Center</span></div></div>
+    <div class="side-label">منوی اصلی</div><nav>
+      <a class="active" href="#dashboard" data-section="dashboard"><span class="nav-icon">⌂</span>داشبورد</a>
+      <a href="#builder" data-section="builder"><span class="nav-icon">＋</span>ساخت کانفیگ</a>
+      <a href="#configs" data-section="configs"><span class="nav-icon">▤</span>کانفیگ‌های من</a>
+    </nav>
+    <div class="side-bottom"><div class="profile-mini"><div id="profileAvatar">U</div><div><b id="profileName">کاربر</b><span id="profileEmail">—</span></div></div><button class="logout" id="logout">خروج <span>↪</span></button></div>
+  </aside>
+  <main class="main">
+    <header class="topbar"><div><span class="eyebrow">CONTROL CENTER / <span id="pageStatus">ONLINE</span></span><h1>خوش اومدی <span id="welcomeUser"></span> <span class="wave">✦</span></h1></div><button class="mobile-menu" type="button">☰</button></header>
+    <section id="dashboard" class="hero reveal">
+      <div class="hero-copy"><div class="pill"><i></i> سرویس‌ها فعال هستند</div><h2>کانفیگ خودت را<br><strong>در چند ثانیه بساز.</strong></h2><p>یک پنل سریع، تمیز و حرفه‌ای برای ساخت و مدیریت کانفیگ‌های VLESS.</p><div class="hero-actions"><button class="primary hero-btn" id="newConfig"><span>شروع ساخت کانفیگ</span><b>←</b></button><span class="hint">VLESS · TCP · WS · gRPC</span></div></div>
+      <div class="hero-visual"><div class="orbit orbit-1"></div><div class="orbit orbit-2"></div><div class="core">V<span>2</span></div><div class="float-tag tag-1">SECURE</div><div class="float-tag tag-2">FAST</div></div>
+    </section>
+    <section class="stats reveal"><div class="stat"><div class="stat-icon">▤</div><span>کانفیگ‌های من</span><b id="configCount">0</b><small>ذخیره‌شده در حساب شما</small></div><div class="stat"><div class="stat-icon">◉</div><span>وضعیت سرویس</span><b class="ok">آنلاین</b><small>Cloudflare Worker</small></div><div class="stat"><div class="stat-icon">⌁</div><span>امنیت حساب</span><b>فعال</b><small>Session محافظت‌شده</small></div></section>
+    <section class="panel reveal" id="builder"><div class="section-head"><div><span class="section-kicker">CONFIG BUILDER</span><h3>ساخت کانفیگ VLESS</h3><p>اطلاعات اتصال را وارد کن و خروجی آماده دریافت کن.</p></div><div class="step-badge"><b>01</b><span>BUILD</span></div></div>
+      <form id="configForm" class="config-form">
+        <div class="field full"><label>نام کانفیگ</label><div class="input-wrap"><span>✦</span><input id="configName" maxlength="100" required placeholder="مثلاً VLESS-IR-01"></div></div>
+        <div class="form-grid"><div class="field"><label>آدرس سرور</label><div class="input-wrap"><span>⌁</span><input id="serverAddress" required placeholder="example.com"></div></div><div class="field"><label>پورت</label><div class="input-wrap"><span>#</span><input id="serverPort" type="number" min="1" max="65535" value="443" required></div></div></div>
+        <div class="field full"><label>UUID</label><div class="input-wrap"><span>◇</span><input id="uuid" required placeholder="UUID سرور را وارد کن"></div></div>
+        <div class="form-grid"><div class="field"><label>Transport</label><div class="select-wrap"><select id="transport"><option value="tcp">TCP — مستقیم</option><option value="ws">WebSocket — WS</option><option value="grpc">gRPC — سرویس</option></select><span>⌄</span></div></div><div class="field"><label>امنیت اتصال</label><div class="select-wrap"><select id="tls"><option value="tls">TLS — امن</option><option value="none">بدون TLS</option></select><span>⌄</span></div></div></div>
+        <div id="wsFields" class="conditional hidden"><div class="form-grid"><div class="field"><label>WS Path</label><div class="input-wrap"><span>/</span><input id="wsPath" placeholder="/"></div></div><div class="field"><label>WS Host</label><div class="input-wrap"><span>⌁</span><input id="wsHost" placeholder="example.com"></div></div></div></div>
+        <div id="grpcFields" class="conditional hidden"><div class="field"><label>gRPC Service Name</label><div class="input-wrap"><span>≋</span><input id="grpcService" placeholder="my-service"></div></div></div>
+        <button class="primary generate-btn" type="submit"><span>تولید و ذخیره کانفیگ</span><b>⚡</b></button>
+      </form>
+      <div id="generated" class="generated hidden"><div class="generated-head"><div><span class="section-kicker">READY</span><h4>کانفیگ آماده است</h4></div><span class="success-dot">✓</span></div><div class="code-box"><textarea id="generatedText" readonly></textarea><button id="copyConfig" type="button">کپی</button></div></div>
+    </section>
+    <section class="panel reveal" id="configs"><div class="section-head"><div><span class="section-kicker">YOUR LIBRARY</span><h3>کانفیگ‌های ذخیره‌شده</h3><p>همه کانفیگ‌های این حساب اینجا قرار می‌گیرند.</p></div><span class="count-chip"><b id="configCount2">0</b> مورد</span></div><div id="configList" class="config-list"></div></section>
+    <footer><span>CONFIG WEB</span> · ساخته‌شده برای مدیریت ساده و سریع کانفیگ‌ها</footer>
+  </main>
+</div></div><div class="toast" id="toast"></div><script src="/app.js"></script>
+</body></html>
