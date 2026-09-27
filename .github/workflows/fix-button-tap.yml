@@ -1,0 +1,42 @@
+name: Fix mobile button tap highlight
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Remove mobile tap flash
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('style.css')
+          s = p.read_text(encoding='utf-8')
+          marker = '/* mobile-tap-highlight-fix */'
+          if marker not in s:
+              fix = '''\n/* mobile-tap-highlight-fix */\nbutton, .btn, .ghost-btn, .logout, .mini-btn, .option, .mobile-menu, .auth-switch, .copy-btn, .modal-close, .modal-action {\n  -webkit-tap-highlight-color: transparent !important;\n  tap-highlight-color: transparent !important;\n  touch-action: manipulation;\n}\nbutton:focus:not(:focus-visible), .btn:focus:not(:focus-visible), .option:focus:not(:focus-visible) {\n  outline: none !important;\n  box-shadow: none !important;\n}\nbutton::-moz-focus-inner { border: 0; }\n'''
+              p.write_text(s + fix, encoding='utf-8')
+          PY
+
+      - name: Commit fix
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add style.css
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m 'fix: remove mobile blue button tap flash'
+          git push origin HEAD:main
