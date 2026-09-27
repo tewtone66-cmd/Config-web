@@ -1,0 +1,1 @@
+document.getElementById('start').addEventListener('click',()=>{document.getElementById('status').textContent='ماژول ساخت کانفیگ در مرحله بعد اضافه می‌شود.'});
