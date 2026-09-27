@@ -3,3 +3,15 @@
 @media(max-width:900px){.sidebar{width:220px}.main{width:calc(100% - 220px);margin-left:220px;padding:24px}.hero{padding:32px}.hero-art{width:240px}.panel{padding:19px}}
 @media(max-width:720px){html{scroll-behavior:auto}.sidebar{position:fixed;left:0;right:0;bottom:auto;width:100%;height:62px;padding:7px 10px;flex-direction:row;align-items:center;border-right:0;border-bottom:1px solid var(--line)}.brand,.sidebar-foot,.nav-label{display:none}.main{width:100%;margin:62px 0 0;padding:14px 11px}.mobile-menu{display:block}.hero{min-height:300px;padding:24px 18px}.hero h2{font-size:26px}.hero-art{display:none}.stats{grid-template-columns:1fr;gap:8px}.stat{min-height:78px;padding:13px}.panel{padding:16px;margin-top:9px}.builder-grid{grid-template-columns:1fr;gap:9px}.field-card.full{grid-column:auto}.split{grid-template-columns:1fr}.option-grid{grid-template-columns:1fr}.option-grid.two{grid-template-columns:1fr 1fr}.builder-actions{flex-direction:column;align-items:stretch}.generate-btn{width:100%}.library-tools{width:100%;flex-direction:column;align-items:stretch}.search{width:100%}.config-actions{flex-wrap:wrap}.auth-shell{grid-template-columns:1fr;min-height:auto}.auth-showcase{display:none}.auth-card{border:0;padding:38px 23px}.auth-view{padding:12px}.modal-card{padding:22px}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+/* mobile-tap-highlight-fix */
+button, .btn, .ghost-btn, .logout, .mini-btn, .option, .mobile-menu, .auth-switch, .copy-btn, .modal-close, .modal-action {
+  -webkit-tap-highlight-color: transparent !important;
+  tap-highlight-color: transparent !important;
+  touch-action: manipulation;
+}
+button:focus:not(:focus-visible), .btn:focus:not(:focus-visible), .option:focus:not(:focus-visible) {
+  outline: none !important;
+  box-shadow: none !important;
+}
+button::-moz-focus-inner { border: 0; }
