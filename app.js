@@ -1,1 +1,1 @@
-document.getElementById('start').addEventListener('click',()=>{document.getElementById('status').textContent='ماژول ساخت کانفیگ در مرحله بعد اضافه می‌شود.'});
+const toast=document.getElementById('toast');const show=()=>{toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2400)};document.getElementById('start')?.addEventListener('click',show);document.getElementById('newConfig')?.addEventListener('click',()=>{document.getElementById('builder')?.scrollIntoView({behavior:'smooth'});setTimeout(show,500)});
