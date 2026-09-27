@@ -1,45 +1,14 @@
-const json = (data, status = 200) => new Response(JSON.stringify(data), {
-  status,
-  headers: { 'content-type': 'application/json; charset=utf-8' }
-});
-
-export default {
-  async fetch(request, env) {
-    const url = new URL(request.url);
-
-    if (url.pathname === '/api/health') {
-      let database = false;
-      if (env.DB) {
-        try {
-          await env.DB.prepare('SELECT 1').first();
-          database = true;
-        } catch (_) {}
-      }
-      return json({ ok: true, service: 'config-web', database });
-    }
-
-    if (url.pathname === '/api/configs' && request.method === 'GET') {
-      if (!env.DB) return json({ error: 'Database binding is not configured' }, 503);
-      const rows = await env.DB.prepare(
-        'SELECT id, name, data, created_at FROM configs ORDER BY created_at DESC LIMIT 100'
-      ).all();
-      return json({ configs: rows.results ?? [] });
-    }
-
-    if (url.pathname === '/api/configs' && request.method === 'POST') {
-      if (!env.DB) return json({ error: 'Database binding is not configured' }, 503);
-      let body;
-      try { body = await request.json(); } catch (_) { return json({ error: 'Invalid JSON' }, 400); }
-      const name = typeof body.name === 'string' ? body.name.trim() : '';
-      const data = typeof body.data === 'string' ? body.data : JSON.stringify(body.data ?? {});
-      if (!name || name.length > 100) return json({ error: 'Invalid name' }, 400);
-      const id = crypto.randomUUID();
-      await env.DB.prepare('INSERT INTO configs (id, user_id, name, data) VALUES (?, ?, ?, ?)')
-        .bind(id, 'system', name, data).run();
-      return json({ id, name, data }, 201);
-    }
-
-    if (url.pathname.startsWith('/api/')) return json({ error: 'Not found' }, 404);
-    return env.ASSETS.fetch(request);
-  }
-};
+const json=(data,status=200,extra={})=>new Response(JSON.stringify(data),{status,headers:{'content-type':'application/json; charset=utf-8',...extra}});
+const sessionCookie=(id,maxAge)=>`session=${id}; Max-Age=${maxAge}; Path=/; HttpOnly; Secure; SameSite=Strict`;
+const token=request=>request.headers.get('Cookie')?.match(/(?:^|; )session=([^;]+)/)?.[1];
+async function hashPassword(password){const data=new TextEncoder().encode(password);const hash=await crypto.subtle.digest('SHA-256',data);return [...new Uint8Array(hash)].map(b=>b.toString(16).padStart(2,'0')).join('');}
+async function currentUser(request,env){const id=token(request);if(!id||!env.DB)return null;return await env.DB.prepare('SELECT id, username, email FROM users WHERE id = ?').bind(id).first();}
+export default{async fetch(request,env){const url=new URL(request.url);
+if(url.pathname==='/api/health'){let database=false;if(env.DB){try{await env.DB.prepare('SELECT 1').first();database=true;}catch(_){} }return json({ok:true,service:'config-web',database});}
+if(url.pathname==='/api/auth/register'&&request.method==='POST'){if(!env.DB)return json({error:'Database unavailable'},503);let body;try{body=await request.json();}catch(_){return json({error:'Invalid JSON'},400);}const username=String(body.username||'').trim(),email=String(body.email||'').trim().toLowerCase(),password=String(body.password||'');if(!/^[a-zA-Z0-9_]{3,30}$/.test(username)||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||password.length<8)return json({error:'Invalid registration data'},400);const exists=await env.DB.prepare('SELECT id FROM users WHERE username=? OR email=?').bind(username,email).first();if(exists)return json({error:'Username or email already exists'},409);const id=crypto.randomUUID();await env.DB.prepare('INSERT INTO users(id,username,email,password_hash) VALUES(?,?,?,?)').bind(id,username,email,await hashPassword(password)).run();return json({user:{id,username,email}},201,{'Set-Cookie':sessionCookie(id,604800)});}
+if(url.pathname==='/api/auth/login'&&request.method==='POST'){if(!env.DB)return json({error:'Database unavailable'},503);let body;try{body=await request.json();}catch(_){return json({error:'Invalid JSON'},400);}const login=String(body.login||'').trim().toLowerCase(),passwordHash=await hashPassword(String(body.password||''));const user=await env.DB.prepare('SELECT id,username,email,password_hash FROM users WHERE lower(username)=? OR lower(email)=?').bind(login,login).first();if(!user||user.password_hash!==passwordHash)return json({error:'Invalid credentials'},401);return json({user:{id:user.id,username:user.username,email:user.email}},200,{'Set-Cookie':sessionCookie(user.id,604800)});}
+if(url.pathname==='/api/auth/me'){const user=await currentUser(request,env);return user?json({user}):json({user:null},401);}
+if(url.pathname==='/api/auth/logout'&&request.method==='POST')return json({ok:true},200,{'Set-Cookie':sessionCookie('',0)});
+if(url.pathname==='/api/configs'&&request.method==='GET'){const user=await currentUser(request,env);if(!user)return json({error:'Unauthorized'},401);const rows=await env.DB.prepare('SELECT id,name,data,created_at FROM configs WHERE user_id=? ORDER BY created_at DESC LIMIT 100').bind(user.id).all();return json({configs:rows.results??[]});}
+if(url.pathname==='/api/configs'&&request.method==='POST'){const user=await currentUser(request,env);if(!user)return json({error:'Unauthorized'},401);let body;try{body=await request.json();}catch(_){return json({error:'Invalid JSON'},400);}const name=String(body.name||'').trim(),data=typeof body.data==='string'?body.data:JSON.stringify(body.data??{});if(!name||name.length>100)return json({error:'Invalid name'},400);const id=crypto.randomUUID();await env.DB.prepare('INSERT INTO configs(id,user_id,name,data) VALUES(?,?,?,?)').bind(id,user.id,name,data).run();return json({id,name,data},201);}
+if(url.pathname.startsWith('/api/'))return json({error:'Not found'},404);return env.ASSETS.fetch(request);}};
