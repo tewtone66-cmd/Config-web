@@ -24,4 +24,20 @@ $('configForm').addEventListener('submit',async e=>{e.preventDefault();const btn
 $('copyConfig').onclick=async()=>{const text=$('generatedText').value;if(text){await copyText(text);toast('کپی شد','خروجی آماده استفاده است.')}};$('newConfig').onclick=()=>{$('builder').scrollIntoView({behavior:'smooth'});setTimeout(()=>$('configName').focus(),450)};document.querySelectorAll('input[name="transport"],input[name="tls"]').forEach(i=>i.addEventListener('change',updateTransport));$('configSearch').oninput=renderConfigs;
 $('modalClose').onclick=closeModal;$('modalCancel').onclick=closeModal;$('modalConfirm').onclick=confirmDelete;$('modal').querySelector('.modal-backdrop').onclick=closeModal;$('mobileMenu').onclick=()=>$('sidebar').classList.toggle('open');
 document.querySelectorAll('[data-section]').forEach(a=>a.onclick=e=>{e.preventDefault();$('sidebar').classList.remove('open');document.querySelectorAll('nav a').forEach(x=>x.classList.remove('active'));a.classList.add('active');document.getElementById(a.dataset.section)?.scrollIntoView({behavior:'smooth'})});
-const sections=['dashboard','builder','configs'].map(id=>document.getElementById(id));const observer=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const l=document.querySelector(`[data-section="${e.target.id}"]`);if(l){document.querySelectorAll('nav a').forEach(x=>x.classList.remove('active'));l.classList.add('active')}}}),{rootMargin:'-25% 0px -65%'});sections.forEach(s=>s&&observer.observe(s));setAuth(true);updateTransport();check();
+const sections=['dashboard','builder','configs'].map(id=>document.getElementById(id));const observer=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const l=document.querySelector(`[data-section="${e.target.id}"]`);if(l){document.querySelectorAll('nav a').forEach(x=>x.classList.remove('active'));l.classList.add('active')}}}),{rootMargin:'-25% 0px -65%'});sections.forEach(s=>s&&observer.observe(s));
+
+/* Lightweight visual motion layer: restores the site's intended animations without expensive blur/filter effects. */
+(()=>{const style=document.createElement('style');style.textContent=`
+@keyframes cwFadeUp{from{opacity:0;transform:translate3d(0,18px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+@keyframes cwScaleIn{from{opacity:0;transform:scale(.97) translate3d(0,8px,0)}to{opacity:1;transform:scale(1) translate3d(0,0,0)}}
+@keyframes cwOrbit{to{transform:rotate(360deg)}}
+@keyframes cwPulse{0%,100%{transform:scale(1);opacity:.65}50%{transform:scale(1.06);opacity:1}}
+@keyframes cwLive{0%,100%{opacity:.45;box-shadow:0 0 0 0 #35e99500}50%{opacity:1;box-shadow:0 0 0 5px #35e99518}}
+.reveal{animation:cwFadeUp .55s cubic-bezier(.2,.75,.25,1) both;animation-delay:var(--delay,0ms)}
+.hero .hero-content{animation:cwFadeUp .65s cubic-bezier(.2,.75,.25,1) both}
+.hero-art .r1{animation:cwOrbit 13s linear infinite}.hero-art .r2{animation:cwOrbit 20s linear infinite reverse}.hero-art .r3{animation:cwOrbit 28s linear infinite}.art-core{animation:cwPulse 3s ease-in-out infinite}.live-dot,.status-pill i{animation:cwLive 2s ease-in-out infinite}
+.option:hover,.mini-action:hover{transform:translateY(-2px);border-color:#35e99555;box-shadow:0 8px 20px #0002}.btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 26px #35e99520}.config-item{animation:cwScaleIn .4s cubic-bezier(.2,.75,.25,1) both;animation-delay:var(--delay,0ms)}
+@media(max-width:720px){.hero .hero-content{animation-duration:.45s}.reveal{animation-duration:.4s}.hero-art{display:none}.option:hover,.mini-action:hover,.btn-primary:hover{transform:none;box-shadow:none}.option:active,.mini-action:active,.btn-primary:active{transform:scale(.985)}.live-dot,.status-pill i{animation-duration:2.4s}}
+@media(prefers-reduced-motion:reduce){.reveal,.hero .hero-content,.hero-art .r1,.hero-art .r2,.hero-art .r3,.art-core,.live-dot,.status-pill i,.config-item{animation:none!important}}
+`;document.head.appendChild(style)})();
+setAuth(true);updateTransport();check();
