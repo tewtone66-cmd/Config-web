@@ -12,3 +12,5 @@ button:focus:not(:focus-visible), .btn:focus:not(:focus-visible), .option:focus:
   box-shadow: none !important;
 }
 button::-moz-focus-inner { border: 0; }
+
+.config-meta{display:flex;flex-wrap:wrap;gap:6px;margin:9px 0;color:#71877c;font-size:7px}.config-meta span{border:1px solid #193025;background:#07120c;border-radius:7px;padding:5px 7px}.generated-meta{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}.generated-meta span{font-size:8px;color:#8ba297;border:1px solid #1d3829;background:#08140e;border-radius:8px;padding:6px 8px}@media(max-width:720px){.config-meta{gap:5px}.config-meta span{font-size:6.5px}}
