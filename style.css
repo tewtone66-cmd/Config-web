@@ -18,3 +18,15 @@ button{-webkit-tap-highlight-color:transparent;tap-highlight-color:transparent;t
 @keyframes mobileOrbit{to{transform:rotate(360deg)}}
 @keyframes mobilePulse{0%,100%{opacity:.65;transform:scale(1)}50%{opacity:1;transform:scale(1.04)}}
 @media(prefers-reduced-motion:reduce){.art-ring,.art-core,.live-dot,.status-pill i,.hero h2,.panel,.stat{animation:none!important}}
+
+/* mobile-tap-highlight-fix */
+button, .btn, .ghost-btn, .logout, .mini-btn, .option, .mobile-menu, .auth-switch, .copy-btn, .modal-close, .modal-action {
+  -webkit-tap-highlight-color: transparent !important;
+  tap-highlight-color: transparent !important;
+  touch-action: manipulation;
+}
+button:focus:not(:focus-visible), .btn:focus:not(:focus-visible), .option:focus:not(:focus-visible) {
+  outline: none !important;
+  box-shadow: none !important;
+}
+button::-moz-focus-inner { border: 0; }
